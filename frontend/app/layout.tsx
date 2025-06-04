@@ -37,6 +37,9 @@ export default function RootLayout({
               <Link href="/analyze">Аналіз</Link>
             </li>
             <li>
+              <Link href="/nativelike">Як native</Link>
+            </li>
+            <li>
               <Link href="/about">Про проєкт</Link>
             </li>
           </ul>
