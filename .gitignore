@@ -1,0 +1,55 @@
+# --- Python / FastAPI ---
+__pycache__/
+*.py[cod]
+*.egg
+*.egg-info/
+*.log
+*.sqlite3
+.env
+.env.*
+
+# --- Node / Next.js ---
+node_modules/
+.next/
+dist/
+out/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+package-lock.json
+
+# --- Docker ---
+*.pid
+*.tar
+docker-data/
+.vscode/
+docker-compose.override.yml
+
+# --- OS / Editor junk ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# --- Logs ---
+logs/
+*.log
+
+# --- Optional: compiled files / test outputs ---
+coverage/
+*.coverage
+.pytest_cache/
+jest-test-results.json
+
+# --- Frontend build ---
+frontend/.next/
+frontend/node_modules/
+
+# --- Backend __pycache__ ---
+backend/__pycache__/
+
+# --- Optional: virtual environments ---
+venv/
+.env/
+.venv/
