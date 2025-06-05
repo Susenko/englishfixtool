@@ -4,6 +4,13 @@ from openai import OpenAI
 import os
 import logging
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import PlainTextResponse
+from fastapi.responses import JSONResponse
+import logging
+import json
+import re
+
+
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -32,6 +39,11 @@ class NativeLikeRequest(BaseModel):
     text: str
 
 class ThoughtsRequest(BaseModel):
+    text: str
+
+PHRASES_FILE = "data/user_phrases.json"
+
+class PhraseRequest(BaseModel):
     text: str
 
 @app.post("/thoughts-dictionary")
@@ -118,3 +130,142 @@ def analyze_native_like(data: NativeLikeRequest):
             "native_perception": "Виникла помилка при аналізі тексту.",
             "error": str(e)
         }
+
+@app.get("/phrases-file-json")
+def get_phrases_json():
+    try:
+        with open("data/user_phrases.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return JSONResponse(content=data)
+    except Exception as e:
+        logging.error(f"❌ Error reading user_phrases.json: {e}")
+        return JSONResponse(content={"error": str(e)}, status_code=500)
+
+@app.post("/analyze-and-append")
+def analyze_and_append(data: PhraseRequest):
+    user_text = data.text.strip()
+    logging.info(f"📩 User input: {user_text}")
+
+    try:
+        prompt = f"""
+        You're a language assistant. Analyze this sentence:
+        "{user_text}"
+
+        Return only valid JSON in this structure:
+
+        {{
+          "original": "...",
+          "fixed": "...",
+          "issue": "...",
+          "issues": {{
+            "Articles": 0,
+            "WordOrder": 0,
+            "VerbTenses": 0,
+            "SubjectVerbAgreement": 0,
+            "Prepositions": 0,
+            "WordChoice": 0,
+            "QuestionFormation": 0,
+            "BusinessTone": 0,
+            "SentenceFlow": 0,
+            "Spelling": 0
+          }}
+        }}
+
+        No comments, no explanation — only JSON.
+        """
+
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3,
+        )
+
+        raw = response.choices[0].message.content.strip()
+        logging.info("📦 Raw GPT response:\n" + raw)
+
+        # DEBUG: print all characters with their indexes
+        for idx, char in enumerate(raw):
+            logging.debug(f"[{idx}] {repr(char)}")
+
+        # Try naive parse first
+        try:
+            parsed = json.loads(raw)
+            logging.info(f"✅ JSON loaded directly")
+        except json.JSONDecodeError as e:
+            logging.warning(f"⚠️ Direct parse failed: {e}")
+            logging.warning("🔍 Trying regex-based extraction...")
+
+            # Try extracting first JSON block
+            match = re.search(r"\{.*\}", raw, re.DOTALL)
+            if not match:
+                raise ValueError("🛑 Could not find JSON block with regex!")
+
+            raw_json = match.group()
+            logging.info("🔧 Extracted JSON block:\n" + raw_json)
+
+            parsed = json.loads(raw_json)
+            logging.info("✅ JSON loaded from extracted block")
+
+
+        # Step 4: Добавить в user_phrases.json
+        try:
+            logging.debug(f"📂 Trying to open {PHRASES_FILE} for reading...")
+            with open("data/user_phrases.json", "r", encoding="utf-8") as f:
+                phrases = json.load(f)
+                logging.debug(f"📄 Current content in file ({len(phrases)} phrases): {phrases[:1]}")
+        except FileNotFoundError:
+            logging.warning(f"📁 {PHRASES_FILE} not found. Creating new list.")
+            phrases = []
+        except json.JSONDecodeError as e:
+            logging.error(f"❌ Failed to parse JSON from {PHRASES_FILE}: {e}")
+            phrases = []
+
+        # Insert new phrase
+        logging.debug("➕ Inserting new parsed entry at the top of the list.")
+        phrases.insert(0, parsed)
+
+        try:
+            logging.debug(f"💾 Writing {len(phrases)} total phrases back to {PHRASES_FILE}...")
+            with open(PHRASES_FILE, "w", encoding="utf-8") as f:
+                json.dump(phrases, f, indent=2, ensure_ascii=False)
+            logging.info("✅ Saved successfully to user_phrases.json")
+        except Exception as e:
+            logging.error(f"❌ Failed to write to {PHRASES_FILE}: {e}")
+            raise
+                # Step 5: Update statistics.json
+        try:
+            with open("data/statistics.json", "r", encoding="utf-8") as f:
+                stats = json.load(f)
+            logging.info("📊 Loaded existing statistics.json")
+        except FileNotFoundError:
+            stats = {key: 0 for key in parsed["issues"].keys()}
+            logging.info("📊 Created new statistics.json")
+
+        # Сума по кожній категорії
+        for key, value in parsed["issues"].items():
+            stats[key] = stats.get(key, 0) + value
+
+        with open("data/statistics.json", "w", encoding="utf-8") as f:
+            json.dump(stats, f, indent=2, ensure_ascii=False)
+
+        logging.info("✅ Updated statistics.json")
+
+        # Save as usual
+        return {"success": True, "entry": parsed}
+
+    except Exception as e:
+        logging.error(f"❌ Final error: {str(e)}")
+        return {"success": False, "error": str(e)}
+
+
+
+
+@app.get("/statistics")
+def get_statistics():
+    try:
+        with open("data/statistics.json", "r", encoding="utf-8") as f:
+            stats = json.load(f)
+        return JSONResponse(content=stats)
+    except Exception as e:
+        logging.error(f"❌ Failed to load statistics: {e}")
+        return JSONResponse(content={"error": "Could not load statistics"}, status_code=500)        

@@ -1,0 +1,29 @@
+[
+  {
+    "original": "test",
+    "fixed": "This is a test.",
+    "issue": "Incomplete sentence",
+    "issues": {
+      "Articles": 1,
+      "WordOrder": 0,
+      "VerbTenses": 0,
+      "SubjectVerbAgreement": 0,
+      "Prepositions": 0,
+      "WordChoice": 0,
+      "QuestionFormation": 0,
+      "BusinessTone": 0,
+      "SentenceFlow": 0,
+      "Spelling": 0
+    }
+  },
+  {
+    "original": "I goes to school every day.",
+    "fixed": "I go to school every day.",
+    "issue": "Verb tense + Subject-verb agreement"
+  },
+  {
+    "original": "He don't know the answer.",
+    "fixed": "He doesn't know the answer.",
+    "issue": "Subject-verb agreement"
+  }
+]

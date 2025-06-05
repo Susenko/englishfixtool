@@ -1,0 +1,115 @@
+[
+  {
+    "original": "Please review a new PR:",
+    "fixed": "Please review a new PR.",
+    "issue": "Punctuation",
+    "issues": {
+      "Articles": 0,
+      "WordOrder": 0,
+      "VerbTenses": 0,
+      "SubjectVerbAgreement": 0,
+      "Prepositions": 0,
+      "WordChoice": 0,
+      "QuestionFormation": 0,
+      "BusinessTone": 0,
+      "SentenceFlow": 0,
+      "Spelling": 0,
+      "Punctuation": 1
+    }
+  },
+  {
+    "original": "Summary: improve UI of the registration page to be consistant with login page",
+    "fixed": "Summary: Improve the UI of the registration page to be consistent with the login page.",
+    "issue": "Missing articles, incorrect spelling, and lack of capitalization at the beginning of the sentence.",
+    "issues": {
+      "Articles": 1,
+      "WordOrder": 0,
+      "VerbTenses": 0,
+      "SubjectVerbAgreement": 0,
+      "Prepositions": 0,
+      "WordChoice": 0,
+      "QuestionFormation": 0,
+      "BusinessTone": 0,
+      "SentenceFlow": 0,
+      "Spelling": 1
+    }
+  },
+  {
+    "original": "Sure, because I saw, that LTI 1.3 is preferable now and if we use 1.1 we should have plans to migrate on 1.3.",
+    "fixed": "Sure, because I saw that LTI 1.3 is now preferable, and if we use 1.1, we should have plans to migrate to 1.3.",
+    "issue": "Punctuation and Prepositions",
+    "issues": {
+      "Articles": 0,
+      "WordOrder": 0,
+      "VerbTenses": 0,
+      "SubjectVerbAgreement": 0,
+      "Prepositions": 1,
+      "WordChoice": 0,
+      "QuestionFormation": 0,
+      "BusinessTone": 0,
+      "SentenceFlow": 1,
+      "Spelling": 0
+    }
+  },
+  {
+    "original": "i find job",
+    "fixed": "I found a job",
+    "issue": "The sentence is missing an article and verb tense is incorrect. Also, the first letter of the sentence should be capitalized.",
+    "issues": {
+      "Articles": 1,
+      "WordOrder": 0,
+      "VerbTenses": 1,
+      "SubjectVerbAgreement": 0,
+      "Prepositions": 0,
+      "WordChoice": 0,
+      "QuestionFormation": 0,
+      "BusinessTone": 0,
+      "SentenceFlow": 0,
+      "Spelling": 1
+    }
+  },
+  {
+    "original": "i go school",
+    "fixed": "I go to school",
+    "issue": "The sentence is missing a preposition and the first letter of the sentence is not capitalized.",
+    "issues": {
+      "Articles": 0,
+      "WordOrder": 0,
+      "VerbTenses": 0,
+      "SubjectVerbAgreement": 0,
+      "Prepositions": 1,
+      "WordChoice": 0,
+      "QuestionFormation": 0,
+      "BusinessTone": 0,
+      "SentenceFlow": 0,
+      "Spelling": 1
+    }
+  },
+  {
+    "original": "test",
+    "fixed": "This is a test.",
+    "issue": "Incomplete sentence",
+    "issues": {
+      "Articles": 1,
+      "WordOrder": 0,
+      "VerbTenses": 0,
+      "SubjectVerbAgreement": 0,
+      "Prepositions": 0,
+      "WordChoice": 0,
+      "QuestionFormation": 0,
+      "BusinessTone": 0,
+      "SentenceFlow": 0,
+      "Spelling": 0
+    }
+  },
+  {
+    "original": "I goes to school every day.",
+    "fixed": "I go to school every day.",
+    "issue": "Verb tense + Subject-verb agreement"
+  },
+  {
+    "original": "He don't know the answer.",
+    "fixed": "He doesn't know the answer.",
+    "issue": "Subject-verb agreement"
+  }
+]
